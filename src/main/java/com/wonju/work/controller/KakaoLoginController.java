@@ -2,10 +2,13 @@ package com.wonju.work.controller;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,7 +33,7 @@ public class KakaoLoginController {
 			ModelAndView mv = new ModelAndView();
 			
 			//인증코드는 인자인 code로 받는다.
-			System.out.println("CODE:"+code);
+			//System.out.println("CODE:"+code);
 			
 			//받은 코드를 가지고 다시 토큰을 받기 위한 작업 - POST방식
 			String access_Token = "";
@@ -59,7 +62,7 @@ public class KakaoLoginController {
 				
 				//결과코드가 200이면 성공!!!
 				int res_code = conn.getResponseCode();
-				System.out.println("RES_CODE:"+res_code);
+				//System.out.println("RES_CODE:"+res_code);
 				
 				if(res_code == 200) { //요청이 성공시
 					//요청을 통해 얻은 JSON타입의 결과메세지를 읽어온다.
@@ -69,7 +72,7 @@ public class KakaoLoginController {
 					StringBuffer result = new StringBuffer();
 					while((line = br.readLine()) != null) {
 						result.append(line);
-					}//while의 끝!
+					}
 					
 					br.close();
 					bw.close();
@@ -89,9 +92,9 @@ public class KakaoLoginController {
 					access_Token = (String) j_obj.get("access_token");
 					refresh_Token = (String) j_obj.get("refresh_token");
 					
-					//사용자 정보를 얻기 위해 토큰을 이용한 서버요청시작
+					//사용자 정보를 얻기 위해 토큰을 이용한 서버 요청 시작
 					String header = "Bearer "+access_Token;
-					String apiURL = "https://kapi.kakao.com/v2/user/me";
+					String apiURL = "https://kapi.kakao.com/v1/api/talk/profile";
 					
 					URL url2 = new URL(apiURL);
 					HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
@@ -113,23 +116,19 @@ public class KakaoLoginController {
 						while((str = brd.readLine()) != null) {
 							sBuff.append(str); //카카오 서버에서 전달되는 모든 값들이
 										//sBuff에 누적된다. (JSON)
-						}//while의 끝
+						}
 						
 						obj = j_par.parse(sBuff.toString());// JSON인식
 						
 						//JSON으로 인식된 정보를 다시 JSON객체로 형변환한다.
 						j_obj = (JSONObject) obj;
 						
-						System.out.println("j_obj"+j_obj);
+						//System.out.println("j_obj"+j_obj);
+
 						
-						
-						
-						JSONObject n = (JSONObject) j_obj.get("properties");
-						
-						System.out.println("n"+n);
-						
-						String name = (String) n.get("nickname");
-						String p_img = (String) n.get("profile_image");
+
+						String name = (String) j_obj.get("nickName");
+						String t_img = (String) j_obj.get("thumbnailURL");
 						
 						
 						UserDTO dto = new UserDTO();
@@ -137,14 +136,31 @@ public class KakaoLoginController {
 						
 						session.setAttribute("dto", dto);//로그인!!!
 						mv.addObject("nickname", name);
-						mv.addObject("pic", p_img);
+						mv.addObject("pic", t_img);
 					}
 				}
 				
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			mv.setViewName("kakao_result");
+			mv.setViewName("list");
 			return mv;
 		}
+		
+
+		
+		@RequestMapping(value="/logout")
+		public String access(HttpSession session) throws IOException {
+			
+			String access_token = (String)session.getAttribute("access_token");
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("Authorization", "Bearer "+ access_token);
+			
+			//String result = conn.HttpPostConnection("https://kapi.kakao.com/v1/user/logout", map).toString();
+			//System.out.println(result);
+			
+			return "redirect:/";
+		}
+
+
 }
