@@ -26,15 +26,14 @@ public class KakaoLoginController {
 	
 		@Autowired
 		private HttpSession session;
+		
+		
 
 		@RequestMapping("/kakao_login")
 		public ModelAndView kakaoLogin(String code) {
 			//카카오서버에서 인증코드를 전달해 주는 곳!
 			ModelAndView mv = new ModelAndView();
-			
-			//인증코드는 인자인 code로 받는다.
-			//System.out.println("CODE:"+code);
-			
+
 			//받은 코드를 가지고 다시 토큰을 받기 위한 작업 - POST방식
 			String access_Token = "";
 			String refresh_Token = "";
@@ -81,8 +80,6 @@ public class KakaoLoginController {
 					//System.out.println("result"+result.toString());
 					
 					//JSON파싱 처리 
-					// "access_token"과 "refresh_token"을 잡아내어 ModelAndView에 저장한 후
-					// result.jsp로 이동하여 결과를 표현한다.
 					JSONParser j_par = new JSONParser();
 					Object obj = j_par.parse(result.toString());
 					
@@ -107,10 +104,9 @@ public class KakaoLoginController {
 					
 					res_code = conn2.getResponseCode();
 					if(res_code == HttpURLConnection.HTTP_OK) {
-						//정상적으로 사용자 정보를 요청했다면...
+						//정상적으로 사용자 정보를 요청했다면
 						BufferedReader brd = new BufferedReader(
 								new InputStreamReader(conn2.getInputStream()));
-						System.out.println(brd);
 						StringBuffer sBuff = new StringBuffer();
 						String str = null;
 						while((str = brd.readLine()) != null) {
@@ -125,7 +121,6 @@ public class KakaoLoginController {
 						
 						//System.out.println("j_obj"+j_obj);
 
-						
 
 						String name = (String) j_obj.get("nickName");
 						String t_img = (String) j_obj.get("thumbnailURL");
@@ -135,6 +130,8 @@ public class KakaoLoginController {
 						dto.setName(name);
 						
 						session.setAttribute("dto", dto);//로그인!!!
+						session.setAttribute("access", access_Token);
+						
 						mv.addObject("nickname", name);
 						mv.addObject("pic", t_img);
 					}
@@ -143,23 +140,51 @@ public class KakaoLoginController {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			mv.setViewName("list");
+			
+			mv.setViewName("home_login");
+			
+			
 			return mv;
 		}
 		
 
 		
-		@RequestMapping(value="/logout")
+		@RequestMapping("/logout")
 		public String access(HttpSession session) throws IOException {
 			
-			String access_token = (String)session.getAttribute("access_token");
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("Authorization", "Bearer "+ access_token);
+			System.out.println("로그아웃");
+			
+			String reqURL = "https://kapi.kakao.com/v1/user/logout";
+		    try {
+		        URL url = new URL(reqURL);
+		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		        conn.setRequestMethod("POST");
+		        conn.setRequestProperty("Authorization", "Bearer " + session.getAttribute("access"));
+		        
+		        int responseCode = conn.getResponseCode();
+		        System.out.println("responseCode : " + responseCode);
+		        
+		        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		        
+		        String result = "";
+		        String line = "";
+		        
+		        while ((line = br.readLine()) != null) {
+		            result += line;
+		        }
+		        System.out.println(result);
+		    } catch (IOException e) {
+		        // TODO Auto-generated catch block
+		        e.printStackTrace();
+		    }
 			
 			//String result = conn.HttpPostConnection("https://kapi.kakao.com/v1/user/logout", map).toString();
 			//System.out.println(result);
 			
-			return "redirect:/";
+			session.removeAttribute("dto");
+			session.removeAttribute("access");
+			
+			return "home";
 		}
 
 

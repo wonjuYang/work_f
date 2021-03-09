@@ -10,10 +10,39 @@
 	  </insert>
 	  
 	    <select id="selectLentCar" parameterType="com.wonju.work.dto.LentcarDTO"
-resultType="com.wonju.work.dto.LentcarDTO">
-  	SELECT id, name, addr, lat, logt FROM world.lentcar_t;
-  </select>
-	  
-	  
-	  
+			resultType="com.wonju.work.dto.LentcarDTO">
+  				SELECT * FROM (SELECT  *, @rownum := @rownum+1 AS RNUM
+					FROM WORLD.lentcar_t, 
+					(SELECT @rownum :=0) AS R) AS B WHERE RNUM BETWEEN #{begin} AND #{end}
+ 		 </select>
+  
+  		<delete id="deleteLentCar">
+  			DELETE FROM world.lentcar_t;
+  		</delete>
+  		
+  		
+  		<select id="totalCount" resultType="int">
+  			SELECT COUNT(*) FROM world.lentcar_t;
+  		</select>
+  		
+  		<select id="searchtotalCount" resultType="int">
+  			SELECT COUNT(*) FROM world.lentcar_t WHERE ${subject} LIKE CONCAT('%', #{keyword}, '%');
+  		</select>
+  		
+  		
+  		
+  		
+  		<select id="searchLentCar" parameterType="com.wonju.work.dto.LentcarDTO"
+			resultType="com.wonju.work.dto.LentcarDTO">
+  			SELECT * FROM (SELECT  *, @rownum := @rownum+1 AS RNUM
+					FROM WORLD.lentcar_t, 
+					(SELECT @rownum :=0) AS R) AS B WHERE ${subject} LIKE CONCAT('%', #{keyword}, '%') AND RNUM BETWEEN #{begin} AND #{end}
+  		</select>
+  		
+  		
+  		
+  		
+  		
+  		
+	     
 </mapper>
