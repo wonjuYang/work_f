@@ -38,7 +38,6 @@ public class LentcarController {
 		
 		ModelAndView mv = new ModelAndView();
 		
-		System.out.println(cPage);
 		
 		int c_page = 1;
 		if(cPage != null) {
@@ -114,16 +113,16 @@ public class LentcarController {
 	
 	
 	@RequestMapping("/deletedata")
-	public void delete_lentcar() throws Exception{
+	public String delete_lentcar() throws Exception{
 		
 		
 		int res = lentcarDAO.deleteLentCar();
 		
-		System.out.println(res);
-		
 		if(res > 0) {
 			System.out.println("삭제 완료");
 		}
+		
+		return "home_login";
 
 		
 		
@@ -168,7 +167,7 @@ public class LentcarController {
 	
 
 	@RequestMapping("/insertdata")
-	public void lentCarsInsert(@RequestParam(value="country", defaultValue ="")String name) throws Exception{
+	public String lentCarsInsert(@RequestParam(value="country", defaultValue ="")String name) throws Exception{
 		//데이터 insert하기
 		try{
 
@@ -214,10 +213,7 @@ public class LentcarController {
 		}	// try~catch end
 		
 		
-		/*
-		 * final CityDTO param = new CityDTO(); final List<CityDTO> cityList =
-		 * cityDAO.selectCities(param); System.out.println(cityList);
-		 */
+		return "home_login";
 		
 		
 	}

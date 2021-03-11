@@ -86,6 +86,8 @@ public class KakaoLoginController {
 					//자바에서 편하게 사용할 수 있도록 JSON객체로 변환하자!
 					JSONObject j_obj = (JSONObject) obj;
 					
+					System.out.println(j_obj);
+					
 					access_Token = (String) j_obj.get("access_token");
 					refresh_Token = (String) j_obj.get("refresh_token");
 					

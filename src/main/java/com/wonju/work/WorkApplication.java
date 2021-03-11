@@ -12,6 +12,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 @SpringBootApplication
 public class WorkApplication {
@@ -31,4 +32,5 @@ public class WorkApplication {
 		return sessionFactory.getObject();
 	}
 	
+
 }
