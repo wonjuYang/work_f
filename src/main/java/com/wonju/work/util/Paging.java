@@ -92,8 +92,8 @@ public class Paging {
 	}
 	
 	
-	//페이징
-	public Paging(int nowPage, int rowTotal, int blockList, int blockPage) {
+	//일반 페이징
+	public Paging(int nowPage, int rowTotal, int blockList, int blockPage, String url) {
 		
 		this.nowPage = nowPage;
 		this.rowTotal = rowTotal;
@@ -147,7 +147,9 @@ public class Paging {
 		
 		//이전 기능 활성화 여부
 		if(isPrePage) {
-			sb.append("<li class='previous'><a href='/select_data?cPage=");
+			sb.append("<li class='previous'><a href='/");
+			sb.append(url);
+			sb.append("?cPage=");
 			sb.append(startPage-blockPage);
 			sb.append("'> &lt; </a></li>");
 		}else {
@@ -158,10 +160,12 @@ public class Paging {
 		for(int i = startPage; i<=endPage; i++) {
 			if(i == nowPage) {
 				sb.append("<li>");
-				sb.append(i);
+				sb.append("<a>"+i+"</a>");
 				sb.append("</li>");
 			}else {
-				sb.append("<li><a href='/select_data?cPage=");
+				sb.append("<li><a href='/");
+				sb.append(url);
+				sb.append("?cPage=");
 				sb.append(i);
 				sb.append("'>");
 				sb.append(i);
@@ -172,7 +176,9 @@ public class Paging {
 		
 		//다음 기능
 		if(isNextPage) {
-			sb.append("<li class='next'><a href='/select_data?cPage=");
+			sb.append("<li class='next'><a href='/");
+			sb.append(url);
+			sb.append("?cPage=");
 			sb.append(startPage+blockPage);
 			sb.append("'> &gt; </a></li>");
 		}else {
@@ -187,8 +193,8 @@ public class Paging {
 	}
 	
 	
-	//페이징
-	public Paging(int nowPage, int rowTotal, int blockList, int blockPage, String subject, String keyword) {
+	//검색 페이징
+	public Paging(int nowPage, int rowTotal, int blockList, int blockPage, String url, String subject, String keyword) {
 		
 		this.nowPage = nowPage;
 		this.rowTotal = rowTotal;
@@ -242,7 +248,9 @@ public class Paging {
 		
 		//이전 기능 활성화 여부
 		if(isPrePage) {
-			sb.append("<li class='previous'><a href='/search_data?cPage=");
+			sb.append("<li class='previous'><a href='/");
+			sb.append(url);
+			sb.append("?cPage=");
 			sb.append(startPage-blockPage);
 			
 			// subject와 keyword 추가
@@ -260,10 +268,12 @@ public class Paging {
 		for(int i = startPage; i<=endPage; i++) {
 			if(i == nowPage) {
 				sb.append("<li>");
-				sb.append(i);
+				sb.append("<a>"+i+"</a>");
 				sb.append("</li>");
 			}else {
-				sb.append("<li><a href='/search_data?cPage=");
+				sb.append("<li><a href='/");
+				sb.append(url);
+				sb.append("?cPage=");
 				sb.append(i);
 				
 				// subject와 keyword 추가
@@ -281,7 +291,9 @@ public class Paging {
 		
 		//다음 기능
 		if(isNextPage) {
-			sb.append("<li class='next'><a href='/search_data?cPage=");
+			sb.append("<li class='next'><a href='/");
+			sb.append(url);
+			sb.append("?cPage=");
 
 			sb.append(startPage+blockPage);
 			

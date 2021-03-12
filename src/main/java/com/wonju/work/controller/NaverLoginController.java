@@ -63,6 +63,7 @@ public class NaverLoginController {
 
 		UserDTO dto = new UserDTO();
 		dto.setName(naverName);
+		dto.setPic(naverProfileImage);
 		
 		session.setAttribute("dto", dto);//로그인!!!
 		

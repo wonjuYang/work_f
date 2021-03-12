@@ -2,6 +2,7 @@ package com.wonju.work.dto;
 
 public class UserDTO {
 	private String name;
+	
 	public String getName() {
 		return name;
 	}
@@ -15,4 +16,11 @@ public class UserDTO {
 		this.email = email;
 	}
 	private String email;
+	public String getPic() {
+		return pic;
+	}
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
+	private String pic;
 }

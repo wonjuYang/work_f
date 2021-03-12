@@ -13,9 +13,9 @@
 </head>
 <body>
 	<div class="container">
+		<h1>경기도 자동차 대여업체</h1>
 		<div id="map" style="width:800px;height:500px;"></div>
 		<table summary="게시판 목록">
-			<caption>경기도 자동차 대여업체</caption>
 			<thead>
 				<tr class="title">
 					<th class="no">번호</th>

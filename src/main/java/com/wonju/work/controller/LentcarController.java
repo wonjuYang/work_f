@@ -43,24 +43,17 @@ public class LentcarController {
 		if(cPage != null) {
 			c_page = Integer.parseInt(cPage);
 		}
-		
-		System.out.println("???");
-		System.out.println(c_page);
+
 		
 		int rowTotal = lentcarDAO.totalCount();
 		
 		//System.out.println(rowTotal);
 		
-		Paging page = new Paging(c_page, rowTotal, blockList, blockPage);
+		Paging page = new Paging(c_page, rowTotal, blockList, blockPage, "select_data");
 		
-		
-		System.out.println(page.getBegin());
-		System.out.println(page.getEnd());
 		
 		List<LentcarDTO> lentCarList = lentcarDAO.selectLentCar(page.getBegin(), page.getEnd());
-		
-		System.out.println(lentCarList);
-		
+
 		
 		mv.addObject("lentCarList", lentCarList);
 		mv.addObject("rowTotal", rowTotal);
@@ -92,7 +85,7 @@ public class LentcarController {
 		
 		System.out.println(rowTotal);
 		
-		Paging page = new Paging(c_page, rowTotal, blockList, blockPage, subject, keyword);
+		Paging page = new Paging(c_page, rowTotal, blockList, blockPage, "search_data", subject, keyword);
 		
 		
 		List<LentcarDTO> lentCarList = lentcarDAO.searchLentCar(page.getBegin(), page.getEnd(), subject, keyword);
@@ -113,7 +106,7 @@ public class LentcarController {
 	
 	
 	@RequestMapping("/deletedata")
-	public String delete_lentcar() throws Exception{
+	public void delete_lentcar() throws Exception{
 		
 		
 		int res = lentcarDAO.deleteLentCar();
@@ -121,10 +114,7 @@ public class LentcarController {
 		if(res > 0) {
 			System.out.println("삭제 완료");
 		}
-		
-		return "home_login";
 
-		
 		
 	}
 	

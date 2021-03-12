@@ -30,9 +30,8 @@ public class KakaoLoginController {
 		
 
 		@RequestMapping("/kakao_login")
-		public ModelAndView kakaoLogin(String code) {
-			//카카오서버에서 인증코드를 전달해 주는 곳!
-			ModelAndView mv = new ModelAndView();
+		public String kakaoLogin(String code) {
+
 
 			//받은 코드를 가지고 다시 토큰을 받기 위한 작업 - POST방식
 			String access_Token = "";
@@ -130,12 +129,13 @@ public class KakaoLoginController {
 						
 						UserDTO dto = new UserDTO();
 						dto.setName(name);
+						dto.setPic(t_img);
+						
 						
 						session.setAttribute("dto", dto);//로그인!!!
 						session.setAttribute("access", access_Token);
 						
-						mv.addObject("nickname", name);
-						mv.addObject("pic", t_img);
+					
 					}
 				}
 				
@@ -143,10 +143,8 @@ public class KakaoLoginController {
 				e.printStackTrace();
 			}
 			
-			mv.setViewName("home_login");
-			
-			
-			return mv;
+
+			return "home_login";
 		}
 		
 
@@ -156,36 +154,13 @@ public class KakaoLoginController {
 			
 			System.out.println("로그아웃");
 			
-			String reqURL = "https://kapi.kakao.com/v1/user/logout";
-		    try {
-		        URL url = new URL(reqURL);
-		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		        conn.setRequestMethod("POST");
-		        conn.setRequestProperty("Authorization", "Bearer " + session.getAttribute("access"));
-		        
-		        int responseCode = conn.getResponseCode();
-		        System.out.println("responseCode : " + responseCode);
-		        
-		        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		        
-		        String result = "";
-		        String line = "";
-		        
-		        while ((line = br.readLine()) != null) {
-		            result += line;
-		        }
-		        System.out.println(result);
-		    } catch (IOException e) {
-		        // TODO Auto-generated catch block
-		        e.printStackTrace();
-		    }
-			
-			//String result = conn.HttpPostConnection("https://kapi.kakao.com/v1/user/logout", map).toString();
-			//System.out.println(result);
-			
-			session.removeAttribute("dto");
-			session.removeAttribute("access");
-			
+			if(session.getAttribute("dto")!=null) {
+				session.removeAttribute("dto");
+			}else {
+				System.out.println("세션에서 삭제할 것이 없습니다");
+			}
+		    
+
 			return "home";
 		}
 
